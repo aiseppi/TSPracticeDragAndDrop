@@ -7,12 +7,18 @@
     "start": "parcel index.html --open",
     "build": "parcel build index.html"
   },
-  "dependencies": { "parcel-bundler": "^1.6.1" },
+  "dependencies": {
+    "domjs": "0.3.2",
+    "parcel-bundler": "^1.6.1"
+  },
   "devDependencies": {
     "typescript": "4.4.4"
   },
   "resolutions": {
     "@babel/preset-env": "7.13.8"
   },
-  "keywords": ["typescript", "javascript"]
+  "keywords": [
+    "typescript",
+    "javascript"
+  ]
 }

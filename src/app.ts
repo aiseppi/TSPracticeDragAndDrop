@@ -1,31 +1,64 @@
 import "./styles.css";
 
-document.getElementById("appMain").innerHTML = `
-<form>
-        <div class="form-control">
-          <label for="title">Title</label>
-          <input type="text" id="title" />
-        </div>
-        <div class="form-control">
-          <label for="description">Description</label>
-          <textarea id="description" rows="3"></textarea>
-        </div>
-        <div class="form-control">
-          <label for="people">People</label>
-          <input type="number" id="people" step="1" min="0" max="10" />
-        </div>
-        <button type="submit">ADD PROJECT</button>
-      </form>
-    </template>
-    <template id="single-project">
-      <li></li>
-    </template>
-    <template id="project-list">
-      <section class="projects">
-        <header>
-          <h2></h2>
-        </header>
-        <ul></ul>
-      </section>
-    </template>
-    <div id="app"></div>`;
+//object oriented approach
+
+//autobind decorator
+function autobind(
+  _target: any, //_ value is not always used
+  _2methodName: string, //_2 value is not always used
+  descriptor: PropertyDescriptor
+) {
+  const originalMethod = descriptor.value;
+  const adjustedDescriptor: PropertyDescriptor = {
+    configurable: true,
+    get() {
+      const boundFunction = originalMethod.bind(this);
+      return boundFunction;
+    }
+  };
+  return adjustedDescriptor;
+}
+
+//ProjectInputClass
+class ProjectInput {
+  templateElement: HTMLTemplateElement;
+  hostElement: HTMLDivElement;
+  element: HTMLFormElement;
+  titleInputElement: HTMLInputElement;
+  descriptionInputElement: HTMLInputElement;
+  peopleInputElement: HTMLInputElement;
+
+  constructor() {
+    this.templateElement = document.getElementById(
+      "project-input"
+    )! as HTMLTemplateElement;
+    this.hostElement = document.getElementById("app")! as HTMLDivElement;
+
+    const importedNode = document.importNode(
+      this.templateElement?.content,
+      true
+    );
+    this.element = importedNode.firstElementChild as HTMLFormElement;
+    this.element.id = "user-input";
+
+    this.titleInputElement = this.element.querySelector("#title")!;
+    this.descriptionInputElement = this.element.querySelector("#description")!;
+    this.peopleInputElement = this.element.querySelector("#people")!;
+    this.configure();
+    this.attach();
+  }
+
+  @autobind
+  private submitHandler(event: Event) {
+    event.preventDefault();
+    console.log(this.titleInputElement.value);
+  }
+  private configure() {
+    this.element.addEventListener("submit", this.submitHandler);
+  }
+  private attach() {
+    this.hostElement.insertAdjacentElement("afterbegin", this.element);
+  }
+}
+
+const projInput = new ProjectInput();
